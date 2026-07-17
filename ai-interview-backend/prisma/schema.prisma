@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  name String?
+  avatarURL String?
+  FirebaseUid String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Interviews Interview[]
+  Resume  Resume[]
+  creditWallet Creditwallet?
+}
+
+model Interview {
+  id String @id @default(cuid())
+  userId String
+  mode String
+  title String?
+  status String @default("CREATED")
+  score Float?
+  QuestionCount Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields:[userId], references:[id], onDelete: Cascade)
+  questions Question[]
+  report Report?
+}
+
+model Resume {
+  id String @id @default(cuid())
+}
+
+model Creditwallet{
+  id String @id @default(cuid())
+}
+
+model Question{
+  id String @id @default(cuid())
+  InterviewId String
+  text String @db.Text
+  order Int 
+  createdAt DateTime @default(now())
+
+  questions Interview @relation(fields:[InterviewId],references:[id],onDelete:Cascade)
+  answers answer[]
+}
+
+model answer{
+  id String @id @default(cuid())
+  questionId String
+  text String @db.Text
+  score Float
+  feedback String @db.Text
+  evaluatedAt DateTime?
+  createdAt DateTime @default(now())
+
+  question Question @relation(fields:[questionId],references:[id],onDelete:Cascade)
+
+}
+model Report {
+  id String @id @default(cuid())
+}
