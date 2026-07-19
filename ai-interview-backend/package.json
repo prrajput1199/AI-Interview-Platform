@@ -15,6 +15,8 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@neondatabase/serverless": "^1.1.0",
+    "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -31,7 +33,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
