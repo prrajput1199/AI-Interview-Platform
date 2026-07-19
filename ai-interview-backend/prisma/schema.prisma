@@ -24,6 +24,8 @@ model User {
   Interviews Interview[]
   Resume  Resume[]
   creditWallet Creditwallet?
+  creditTransactions creditTransaction[]
+  payments Payment[]
 }
 
 model Interview {
@@ -42,12 +44,59 @@ model Interview {
   report Report?
 }
 
+model Report{
+  id String @id @default(cuid())
+  interviewId String @unique
+  overAllScore Float
+  confidence Float
+  technical Float
+  communication Float
+  strengths String[]
+  weekness String[]
+  suggestions String[]
+  summary String
+  pdfUrl String
+  createdAt DateTime @default(now())
+
+  interview Interview @relation(fields:[interviewId],references:[id],onDelete:Cascade)
+
+}
+
 model Resume {
   id String @id @default(cuid())
+  userId String
+  fileName String?
+  fileURL String
+  status String
+  extractedText String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
 }
 
 model Creditwallet{
   id String @id @default(cuid())
+  userId String @unique
+  balance Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields:[userId],references:[id], onDelete: Cascade)
+  // creditTransactions creditTransaction[]
+}
+
+model creditTransaction{
+ id String @id @default(cuid())
+ userId String
+//  walletId String
+ amount Int // Positive = added Negative  = used
+ type String // Purchased , refund, Usage
+ description String
+ createdAt DateTime @default(now())
+
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade) 
+
 }
 
 model Question{
@@ -71,8 +120,18 @@ model answer{
   createdAt DateTime @default(now())
 
   question Question @relation(fields:[questionId],references:[id],onDelete:Cascade)
-
 }
-model Report {
+
+model Payment{
   id String @id @default(cuid())
+  userId String
+  razorPayOrderId String @unique
+  razorPayPaymentId String
+  amount Int
+  credits Int
+  status String @default("CREATED")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
 }
