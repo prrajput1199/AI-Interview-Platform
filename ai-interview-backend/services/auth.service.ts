@@ -38,7 +38,7 @@ export class AuthService {
                 data: {
                     email: email || "",
                     name: name || "",
-                    avatarUrl: picture || "",
+                    avatarURL: picture || "",
                     FirebaseUid: uid,
 
                     creditWallet: {

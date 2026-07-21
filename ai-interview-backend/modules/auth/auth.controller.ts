@@ -7,7 +7,7 @@ export class AuthController{
 
     async googleLogin (req: Request, res: Response){
        try {
-          const { idToken }= req.body;
+          const { idToken } = req.body;
 
           if(!idToken){
              return res.status(400).json({
