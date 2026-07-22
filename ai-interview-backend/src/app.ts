@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import authRoutes from '../modules/auth/auth.routes';
+import userRoutes from "../modules/user/user.routes"
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors({
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
-app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/vi/user', userRoutes)
 
 export default app;
