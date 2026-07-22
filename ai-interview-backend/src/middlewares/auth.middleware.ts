@@ -26,7 +26,7 @@ export const authenticator = (req: AuthRequest, res: Response, next: NextFunctio
         
         //add user info to the request
         req.user = decoded;
-        next()
+        next();
         
     } catch (error) {
         return res.status(401).json({
