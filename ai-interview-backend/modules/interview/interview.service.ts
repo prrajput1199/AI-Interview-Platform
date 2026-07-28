@@ -50,6 +50,61 @@ export class InterviewService{
 
         return Interview;
     }
+    
+    async generateQuestions(interviewId: string){
+        const interview = await prisma.interview.findUnique({
+            where : {id : interviewId}
+        })
 
+        if(!interview){
+            throw new Error("Interview not found");
+        }
+
+        const questions = await gemini.generateQuestions(interview.mode,"INTERMEDIATE",interview.QuestionCount);
+
+        const savedQuestions = await Promise.all(
+            questions.map((text,index)=>{
+                prisma.question.create({
+                    data:{
+                        InterviewId: interview.id,
+                        text,
+                        order: index +1
+                    }
+                })
+            })
+        )
+
+        await prisma.interview.update({
+            where: {id: interviewId},
+            data : {status: "IN_PROGRESS"}
+        })
+        
+       return savedQuestions;
+
+    }
+    
+    async getInterviewWithQuestions(interviewId:string,userId:string){
+
+       const interview = await prisma.interview.findFirst({
+        where: { id : interviewId , userId},
+        include : {
+            questions: {
+                orderBy : {
+                    order : 'asc'
+                },
+                include :{
+                    answers :true
+                }
+            }
+        },
+        // report: true
+       })
+
+       if(!interview){
+        throw new Error("Interview not found")
+       }
+       
+       return interview;
+    }
 
 }
