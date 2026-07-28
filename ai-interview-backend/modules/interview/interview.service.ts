@@ -1,0 +1,55 @@
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaClient } from "../../generated/prisma/client";
+import {GeminiService} from "../../services/gemini.service"
+
+const adapter = new PrismaNeon({
+    connectionString: process.env.DATABASE_URL!,
+});
+
+export const prisma = new PrismaClient({
+    adapter,
+});
+
+const gemini = new GeminiService();
+
+export class InterviewService{
+
+    async createInterview(userId:string,mode:string,title?:string){
+      
+        const wallet = await prisma.creditwallet.findUnique({
+            where: {userId}
+        })
+
+        if(!wallet || wallet.balance < 1){
+            throw new Error("Insufficient credits. Please purchase more credits");
+        }
+
+        const Interview = await prisma.interview.create({
+            data:{
+                userId,
+                mode,
+                title : title || `${mode} Interview`,
+                status:"CREATED",
+                QuestionCount: 5
+            }
+        })
+
+        await prisma.creditwallet.update({
+            where: {userId},
+            data: {balance : {decrement : 1}}
+        });
+
+        await prisma.creditTransaction.create({
+            data:{
+                userId,
+                amount: -1,
+                type:"USAGE",
+                description:`Interview ${Interview.id}`
+            }
+        });
+
+        return Interview;
+    }
+
+
+}

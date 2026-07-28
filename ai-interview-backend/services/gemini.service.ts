@@ -1,15 +1,27 @@
+import "dotenv/config";
 import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 
 export class GeminiService {
     private model: GenerativeModel;
 
     constructor() {
-        const GenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        this.model = GenAI.getGenerativeModel({ model: "gemini-pro" })
+        console.log("API Key:", process.env.GEMINI_API_KEY);
+        const GenAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+        // async function listModels() {
+        //     const response = await fetch(
+        //         `https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`
+        //     );
+
+        //     console.log(await response.json());
+        // }
+
+        // listModels();
+        this.model = GenAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
     }
 
 
-    async generateQuestion(role: string, difficulty: string, count: number): Promise<string[]> {
+    async generateQuestions(role: string, difficulty: string, count: number): Promise<string[]> {
         try {
             const prompt = `
         Generate ${count} interview questions for a ${difficulty} level ${role} position.
@@ -34,7 +46,6 @@ export class GeminiService {
             throw new Error("Failed to Generate Questions")
         }
     }
-
 
     async evaluateAnswer(question: string, answer: string): Promise<{
         score: number,
@@ -82,22 +93,22 @@ export class GeminiService {
                 };
             }
         } catch (error) {
-           console.error("Gemini Evaluate Error",error);
-           throw new Error("Failed to evaluate answer");
+            console.error("Gemini Evaluate Error", error);
+            throw new Error("Failed to evaluate answer");
         }
     }
 
-    async generateReport(question:string[],answers:string[]): Promise<{
-      overallScore:number,
-      strengths:string[],
-      weaknesses:string[]
-      suggestions:string[],
-      summary:string
-    }>{
+    async generateReport(question: string[], answers: string[]): Promise<{
+        overallScore: number,
+        strengths: string[],
+        weaknesses: string[]
+        suggestions: string[],
+        summary: string
+    }> {
         try {
-            const qaPairs = question.map((q,i)=> `Q${i+1}: ${q}\nA${i+1}: ${answers[i] || "Not answered"}`).join('\n\n');
+            const qaPairs = question.map((q, i) => `Q${i + 1}: ${q}\nA${i + 1}: ${answers[i] || "Not answered"}`).join('\n\n');
 
-              const prompt = `
+            const prompt = `
         Interview Transcript:
         ${qaPairs}
         
@@ -119,30 +130,30 @@ export class GeminiService {
         }
       `;
 
-         const result = await this.model.generateContent(prompt);
-         const response = await result.response;
-         const text  = response.text();
+            const result = await this.model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
-         try {
-            const report = JSON.parse(text);
-            return report;
-         } catch (error) {
-            return {
-          overallScore: 5,
-          strengths: ['Good attempt'],
-          weaknesses: ['Could be more prepared'],
-          suggestions: ['Practice more interviews'],
-          summary: 'A basic interview performance.'
-        };
-         }
+            try {
+                const report = JSON.parse(text);
+                return report;
+            } catch (error) {
+                return {
+                    overallScore: 5,
+                    strengths: ['Good attempt'],
+                    weaknesses: ['Could be more prepared'],
+                    suggestions: ['Practice more interviews'],
+                    summary: 'A basic interview performance.'
+                };
+            }
         } catch (error) {
-            console.error("Gemini Report generation error",error);
+            console.error("Gemini Report generation error", error);
             throw new Error("Failed to generate report");
         }
     }
 
 
-    
+
 }
 
 
