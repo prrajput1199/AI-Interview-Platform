@@ -107,4 +107,40 @@ export class InterviewService{
        return interview;
     }
 
+    async getInterviewHistory(userId:string,page:number = 1, limit:number= 10){
+        const skip = (page-1)*limit;
+
+        const [interview,total] = await Promise.all([prisma.interview.findMany(
+            {
+            where:{userId},
+            orderBy: {createdAt:"desc"},
+            skip,
+            take:limit,
+            include:{
+                report:{
+                    select:{
+                        overAllScore:true
+                    }
+                }
+            }
+          },
+          ),
+        prisma.interview.count({
+            where:{userId}
+        })
+        ]);
+
+        return {
+            interview,
+            pagination:{
+                page,
+                limit,
+                total,
+                pages: Math.ceil(total/limit)
+            }
+        }
+    }
+    
+
+
 }
