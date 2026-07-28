@@ -3,7 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import authRoutes from '../modules/auth/auth.routes';
-import userRoutes from "../modules/user/user.routes"
+import userRoutes from "../modules/user/user.routes";
+import interviewRoutes from "../modules/interview/interview.routes"
 import { errorHandler } from "./middlewares/error.middleware";
 
 const app = express();
@@ -21,6 +22,8 @@ app.use(cookieParser());
 app.use(errorHandler);
 
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/vi/user', userRoutes)
+app.use('/api/vi/user', userRoutes);
+app.use('/api/v1/interviews', interviewRoutes);
+
 
 export default app;
