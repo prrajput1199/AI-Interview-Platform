@@ -12,5 +12,7 @@ router.post("/",interviewController.createInterview.bind(interviewController));
 router.post("/:interviewId/generate",interviewController.generateQuestions.bind(interviewController));
 router.get("/:interviewId",interviewController.getInterview.bind(interviewController));
 router.get("/",interviewController.getHistory.bind(interviewController));
+router.post("/:interviewId/answer",interviewController.submitAnswer.bind(interviewController))
+router.post("/:interviewId/complete",interviewController.completeInterview.bind(interviewController))
 
 export default router;

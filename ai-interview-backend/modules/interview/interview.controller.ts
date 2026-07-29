@@ -98,5 +98,34 @@ export class InterviewController {
             })
         }
     }
+    
+    async submitAnswer(req:AuthRequest,res:Response){
+     try {
+        const userId = req.user!.userId;
 
+        const { interviewId } = req.params;
+        const { questionId , answer} = req.body;
+        
+        if(!questionId || !answer){
+            return res.status(400).json({
+                success: false,
+                message: "Quetion ID and answer are required"
+            })
+        }
+
+        const result = await answserService.submitAnswer(interviewId,questionId,userId,answer);
+        
+        res.status(200).json({
+            success: true,
+            data: result,
+            message: "Answer submitted successfully"
+        })
+     } catch (error:any) {
+        console.error("Submit answer error",error);
+        res.status(400).json({
+            success: false,
+            message: error.message || "failed to submit answer"
+        })
+     }
+    }
 }

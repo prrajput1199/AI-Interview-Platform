@@ -21,7 +21,7 @@ async function testInterview() {
         FirebaseUid: 'test123'
       }
     });
-
+``
     // Add credits to the user
     await prisma.creditwallet.create({
       data: {
