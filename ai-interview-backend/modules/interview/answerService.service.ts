@@ -66,7 +66,56 @@ export class AnswerService{
         }
     }
 
-    async completeInterview(){
+    async completeInterview(interviewId: string,userId:string){
+        const Interview = await prisma.interview.findFirst({
+            where: {id:interviewId },
+            include:{
+                questions:{
+                    include:{
+                        answers:true
+                    }
+                }
+            }
+        });
 
+        if(!Interview){
+            throw new Error("Interview not found");
+        }
+        
+
+        const allAnswered = Interview.questions.every(q => q.answers !== null);
+
+        if(!allAnswered){
+            throw new Error("Not all quetions has been answered");
+        }
+
+        const questions = Interview.questions.map(q => q.text);
+        
+
+        //answers is an array(Verify it)
+        const answers = Interview.questions.map((q) => q.answers?.text || "Not answered");
+
+        const reportData = await gemini.generateReport(questions,answers);
+
+        const report = await prisma.report.create({
+            data:{
+                interviewId,
+                overAllScore: reportData.overallScore,
+                strengths: reportData.strengths,
+                weaknesses: reportData.weaknesses,
+                suggestions:reportData.suggestions,
+                summary:reportData.summary
+            }
+        })
+
+        await prisma.interview.update({
+             where:{id: interviewId},
+             data:{
+                status:"COMPLETED",
+                score:reportData.overallScore
+             }
+        });
+
+        return report;
     }
 }

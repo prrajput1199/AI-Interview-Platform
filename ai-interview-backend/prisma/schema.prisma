@@ -52,7 +52,7 @@ model Report{
   technical Float
   communication Float
   strengths String[]
-  weekness String[]
+  weaknesses String[]
   suggestions String[]
   summary String
   pdfUrl String
