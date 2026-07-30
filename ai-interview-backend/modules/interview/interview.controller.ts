@@ -1,7 +1,9 @@
 import {Response} from "express";
 import {AuthRequest} from "../../src/middlewares/auth.middleware";
 import { InterviewService } from "./interview.service";
+import {AnswerService} from "./answerService.service"
 
+const answerService = new AnswerService()
 const interviewService = new InterviewService();
 export class InterviewController {
     async createInterview(req:AuthRequest,res:Response){
@@ -113,13 +115,14 @@ export class InterviewController {
             })
         }
 
-        const result = await answserService.submitAnswer(interviewId,questionId,userId,answer);
+        const result = await answerService.submitAnswer(interviewId,questionId,userId,answer);
         
         res.status(200).json({
             success: true,
             data: result,
             message: "Answer submitted successfully"
-        })
+        });
+
      } catch (error:any) {
         console.error("Submit answer error",error);
         res.status(400).json({
@@ -128,4 +131,28 @@ export class InterviewController {
         })
      }
     }
+    
+     async completeInterview(req:AuthRequest,res:Response){
+        try {
+            
+            const userId = req.user!.userId;
+            const { interviewId } = req.params;
+    
+            const report = await answerService.completeInterview(interviewId,userId);
+    
+            res.status(200).json({
+                success:true,
+                data: report,
+                message:"Interview completed successfully"
+            });
+
+        } catch (error:any) {
+            console.error("Complete Interview error: ")
+            res.status(400).json({
+                success: false,
+                message: error.message || "Failed to complete interview" 
+            })
+        }
+     }
+
 }
