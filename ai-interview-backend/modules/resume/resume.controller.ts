@@ -1,10 +1,11 @@
 import { Response } from "express";
 import { AuthRequest } from "../../src/middlewares/auth.middleware";
+import { ResumeService } from "./resume.service";
 
 const resumeService = new ResumeService();
 
 export class ResumeController {
-    async uplaodResume(req: AuthRequest, res: Response){
+    async uploadResume(req: AuthRequest, res: Response){
       try {
           const userId = req.user!.userId
 
@@ -54,7 +55,6 @@ export class ResumeController {
         res.status(500).json({
             success: false,
             message:"Failed to get resume"
-
         })
      }
     }
@@ -79,7 +79,5 @@ export class ResumeController {
                 message: error.message || "Failed to delete Resume"
             })
         }
-        
-        
     }
 }

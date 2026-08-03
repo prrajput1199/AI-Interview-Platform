@@ -1,6 +1,7 @@
 import {Router} from "express";
 import { authenticator } from "../../src/middlewares/auth.middleware";
 import {upload} from "../../src/middlewares/upload.middleware";
+import { ResumeController } from "./resume.controller";
 
 const router = Router();
 const resumeController = new ResumeController();

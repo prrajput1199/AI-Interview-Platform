@@ -152,6 +152,57 @@ export class GeminiService {
         }
     }
 
+    async analyzeResume(text:string): Promise<{
+        skills: string[];
+        experience:string;
+        projects:string[];
+        strengths:string[];
+        weaknesses:string[];
+    }>{
+          try {
+            const prompt = `
+             Resume Text:
+        ${text.substring(0, 3000)} // Limit text length
+        
+        Analyze this resume for a technical interview.
+        Provide:
+        1. Top skills (as array of strings)
+        2. Summary of experience (one sentence)
+        3. Key projects (array of strings)
+        4. Strengths (3-5 points)
+        5. Weaknesses/areas for improvement (3-5 points)
+        
+        Return as JSON:
+        {
+          "skills": ["skill1", "skill2"],
+          "experience": "3 years of experience in...",
+          "projects": ["Project 1", "Project 2"],
+          "strengths": ["Strength 1"],
+          "weaknesses": ["Weakness 1"]
+        }`;
+
+        const result =  await this.model.generateContent(prompt);
+        const response = await result.response;
+        const Text = response.text();
+        
+        try {
+            const analysis = JSON.parse(Text);
+            return analysis;
+        } catch (error) {
+            return {
+             skills: ['Not analyzed'],
+             experience: 'Not analyzed',
+             projects: [],
+             strengths: ['Not analyzed'],
+             weaknesses: ['Not analyzed']
+            }
+        }
+          } catch (error) {
+            console.error("Gemini resume analysis error: ", error);
+            throw new Error("Failed to analyze resume")
+          }
+    }
+
 
 
 }
