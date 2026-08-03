@@ -33,10 +33,56 @@ export class ResumeService{
         })
 
         try {
-            const analysis = await gemini.analyzeResume()
+            const analysis = await gemini.analyzeResume(extractedText);
+
+            await prisma.resume.update({
+                where : { id : resume.id},
+                data:{
+
+                }
+            });
+
+            return {
+                resume,
+                analysis
+            }
         } catch (error) {
-            
+            console.error("Resume analysis failed: ", error);
+            await prisma.resume.update({
+                where: {id : resume.id},
+                data:{ status:"FAILED"}
+            });
+            throw new Error("Failed to analyze resume")
         }
+    }
+
+    async getResume(userId:string){
+        return prisma.resume.findFirst({
+            where: { userId},
+            orderBy:{
+                createdAt:"desc"
+            }
+        })
+    }
+
+    async deleteResume(resumeId:string, userId: string){
+        const resume = await prisma.resume.findFirst({
+            where: {id:resumeId, userId}
+        });
+
+        if(!resume){
+            throw new Error("Resume not found");
+        }
+
+        try {
+            fs.unlinkSync(resume.fileURL);
+        } catch (error) {
+            console.error("Failed to delete file: ", error);
+        }
+
+        return prisma.resume.delete({
+            where:{id : resumeId}
+        })
     }
 }
 
