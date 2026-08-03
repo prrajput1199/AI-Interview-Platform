@@ -43,12 +43,43 @@ export class ResumeController {
                 message:"No resume Found"
             })
         }
+
+        res.status(200).json({
+            success: true,
+            data: resume
+          });
+
      } catch (error) {
-        
+        console.error("Get Resume error");
+        res.status(500).json({
+            success: false,
+            message:"Failed to get resume"
+
+        })
      }
     }
 
     async deleteResume(req: AuthRequest, res: Response){
+        try {
+            const userId = req.user!.userId;
+    
+            const { resumeId } = req.params;
+
+            await resumeService.deleteResume(resumeId, userId);
+
+            res.status(200).json({
+                success: true,
+                message: "Resume Deleted Successfully"
+            })
+            
+        } catch (error: any) {
+            console.error("Delete Resume Error", error);
+            res.status(404).json({
+                success: false,
+                message: error.message || "Failed to delete Resume"
+            })
+        }
+        
         
     }
 }
