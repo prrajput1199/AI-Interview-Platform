@@ -24,6 +24,7 @@ app.use(errorHandler);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/vi/user', userRoutes);
 app.use('/api/v1/interviews', interviewRoutes);
+app.use('/api/v1/resume', resumeRoutes)
 
 
 export default app;
