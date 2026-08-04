@@ -23,6 +23,7 @@ export class ResumeController {
             data: result,
             message: "Resume uploaded and anayzed"
           });
+          
       } catch (error:any) {
           console.error("Upload Resume Error", error);
           res.status(400).json({
