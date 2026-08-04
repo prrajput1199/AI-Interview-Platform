@@ -13,7 +13,7 @@ router.post("/webhook", paymentController.verifyPayment.bind(paymentController))
 router.use(authenticator);
 
 router.post("/create-order",paymentController.createOrder.bind(paymentController));
-router.post('/verify',paymentController.getBalance.bind(paymentController));
+router.post('/verify',paymentController.verifyPayment.bind(paymentController));
 router.get("/balance", paymentController.getBalance.bind(paymentController));
 router.get("/transactions",paymentController.getTransactions.bind(paymentController));;
 
