@@ -66,7 +66,7 @@ export class ResumeController {
     
             const { resumeId } = req.params;
 
-            await resumeService.deleteResume(resumeId, userId);
+            await resumeService.deleteResume(resumeId as any, userId);
 
             res.status(200).json({
                 success: true,

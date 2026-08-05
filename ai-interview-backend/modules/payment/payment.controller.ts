@@ -1,6 +1,6 @@
 import { Response } from "express";;
 import { AuthRequest } from "../../src/middlewares/auth.middleware";
-
+import { PaymentService } from "./payment.service";
 
 const paymentService = new PaymentService();
 
@@ -20,7 +20,7 @@ export class PaymentController{
           })
         }
 
-        const order = await paymentService.createIOrder(userId, credits);
+        const order = await paymentService.createOrder(userId, credits);
 
         res.status(200).json({
               success: true,
@@ -109,12 +109,6 @@ export class PaymentController{
             message: error.message || "Failed to get Transactions"
         })
     }
-
-
-
     
-
-
-
    }
 }

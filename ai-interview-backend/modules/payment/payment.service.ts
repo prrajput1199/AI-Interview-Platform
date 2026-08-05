@@ -101,7 +101,7 @@ export class PaymentService{
         return payment;
     }
 
-    async handlewebHook(body: any, signature: string){
+    async handleWebHook(body: any, signature: string){
         const expectedSignature = crypto.createHmac('sha256',process.env.RAZORPAY_KEY_SECRET!).update(JSON.stringify(body)).digest('hex');
         
 
@@ -118,7 +118,7 @@ export class PaymentService{
 
             const paymentId = payload.payment.entity.id;
 
-            const signature= payload.payment.entity.signature;
+            const signature = payload.payment.entity.signature;
 
             //need to trigger verification here
             console.log("Payment captured",{orderId,paymentId});
@@ -145,6 +145,30 @@ export class PaymentService{
         return wallet;
     }
 
-    
+    async getTransactions(userId: string , page: number = 1, limit: number= 10){
+       const skip = (page-1)* limit;
+
+       const [transactions, total] = await Promise.all([
+        prisma.creditTransaction.findMany({
+            where:{id: userId},
+            orderBy:{createdAt:'desc'},
+            skip,
+            take:limit
+        }),
+        prisma.creditTransaction.count({
+            where:{userId}
+        })
+       ])
+
+       return {
+        transactions,
+        pagination:{
+            page,
+            limit,
+            total,
+            pages:Math.ceil(total/limit)
+        }
+       }
+    }
 
 }

@@ -38,7 +38,7 @@ export class ResumeService{
             await prisma.resume.update({
                 where : { id : resume.id},
                 data:{
-
+                      // validate what I need to update
                 }
             });
 
