@@ -101,5 +101,50 @@ export class PaymentService{
         return payment;
     }
 
+    async handlewebHook(body: any, signature: string){
+        const expectedSignature = crypto.createHmac('sha256',process.env.RAZORPAY_KEY_SECRET!).update(JSON.stringify(body)).digest('hex');
+        
+
+        if(expectedSignature !== signature){
+            throw new Error("Invalid webhook signature");
+        }
+
+
+        const event = body.event;
+        const payload = body.payload;
+
+        if(event === 'payment.captured'){
+            const orderId = payload.payment.entity.order_id;
+
+            const paymentId = payload.payment.entity.id;
+
+            const signature= payload.payment.entity.signature;
+
+            //need to trigger verification here
+            console.log("Payment captured",{orderId,paymentId});
+        }
+
+        return { received: true}
+    }
+    
+
+    async getBalance(userId: string){
+        const wallet = await prisma.creditwallet.findUnique({
+            where: {userId}
+        });
+
+        if(!wallet){
+            return prisma.creditwallet.create({
+                data:{
+                    userId,
+                    balance:0
+                }
+            })
+        }
+
+        return wallet;
+    }
+
+    
 
 }
