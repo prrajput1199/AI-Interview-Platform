@@ -5,6 +5,7 @@ import {AnswerService} from "./answerService.service"
 
 const answerService = new AnswerService()
 const interviewService = new InterviewService();
+const pdfService = new PDFService()
 export class InterviewController {
     async createInterview(req:AuthRequest,res:Response){
         try {
@@ -115,7 +116,7 @@ export class InterviewController {
             })
         }
 
-        const result = await answerService.submitAnswer(interviewId,questionId,userId,answer);
+        const result = await answerService.submitAnswer(interviewId ,questionId,userId,answer);
         
         res.status(200).json({
             success: true,
@@ -138,7 +139,7 @@ export class InterviewController {
             const userId = req.user!.userId;
             const { interviewId } = req.params;
     
-            const report = await answerService.completeInterview(interviewId,userId);
+            const report = await answerService.completeInterview(interviewId as any,userId);
     
             res.status(200).json({
                 success:true,
@@ -153,6 +154,25 @@ export class InterviewController {
                 message: error.message || "Failed to complete interview" 
             })
         }
+     }
+
+     async downloadReport(req:AuthRequest, res:Response){
+             try {
+                const userId = req.user?.userId;
+
+                const { interviewId } = req.params;
+
+                const result = await pdfService.generateReport(interviewId,userId);
+
+                res.download(result.filepath,result.filename);
+
+             } catch (error: any) {
+                console.error("Generate report failed",error);
+                res.status(500).json({
+                    success: false,
+                    message: error.message || "Failed to generate report"
+                })
+             }
      }
 
 }

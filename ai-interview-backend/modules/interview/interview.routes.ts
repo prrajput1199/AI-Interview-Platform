@@ -14,5 +14,5 @@ router.get("/:interviewId",interviewController.getInterview.bind(interviewContro
 router.get("/",interviewController.getHistory.bind(interviewController));
 router.post("/:interviewId/answer",interviewController.submitAnswer.bind(interviewController))
 router.post("/:interviewId/complete",interviewController.completeInterview.bind(interviewController))
-
+router.get('/interviewId/report',interviewController.downloadReport.bind(interviewController))
 export default router;
