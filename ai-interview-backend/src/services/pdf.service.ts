@@ -27,9 +27,10 @@ export class PDFService{
                     include:{
                         answers:true
                     }
-                }
+                },
+                report: true
             },
-            report: true
+     
          });
 
          if(!interview || !interview.report){
@@ -134,7 +135,13 @@ export class PDFService{
 
     
     private addSuggestions(doc: any, report: any){
-        doc.fontSize(18).text('Improvement Suggestions', {underline: true}).moveDown()
+        doc.fontSize(18).text('Improvement Suggestions', {underline: true}).moveDown();
+
+        report.suggestions.forEach((suggestion: string, index:number)=>{
+            doc.fontSize(12).text(`${index + 1}.${suggestion}`)
+        });
+
+        doc.moveDown();
     }
     
     private addFooter(doc: any){

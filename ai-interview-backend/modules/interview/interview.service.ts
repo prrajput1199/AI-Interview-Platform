@@ -95,9 +95,9 @@ export class InterviewService{
                 include :{
                     answers :true
                 }
-            }
+            },
+            report: true
         },
-        // report: true
        })
 
        if(!interview){
