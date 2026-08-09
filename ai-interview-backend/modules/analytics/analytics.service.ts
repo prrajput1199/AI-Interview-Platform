@@ -54,12 +54,14 @@ export class AnalyticsService{
             creditsPurchased,
             creditsBalance: wallet?.balance || 0
         }
-
-
     }
 
-    async getPerformanceTrend(){
+    async getPerformanceTrend(userId: string, days: number = 30){
+        
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
 
+        // const interviews = await 
     }
 
     async getSkillEvaluation(){
