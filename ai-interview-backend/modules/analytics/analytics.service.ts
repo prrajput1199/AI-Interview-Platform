@@ -61,10 +61,67 @@ export class AnalyticsService{
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
 
-        // const interviews = await 
+        const interviews = await prisma.interview.findMany({
+            where:{
+                userId,
+                status:"COMPLETED",
+                createdAt:{
+                    gte: startDate
+                }
+            },
+            include:{
+                report:true
+            },
+            orderBy:{
+                createdAt: "desc"
+            }
+        });
+
+        const trend = interviews.map(i => ({
+            date: i.createdAt.toISOString().split('T')[0],
+            score: i.report?.overAllScore || 0
+        }));
+
+        return trend;
     }
 
-    async getSkillEvaluation(){
+    async getSkillEvaluation(userId: string){
+        const reports = await prisma.report.findMany({
+            where: {
+                interview : {
+                    userId
+                }
+            },
+            include: {
+                interview: true
+            },
+            orderBy: {
+                createdAt : 'desc'
+            },
+            take: 10
+        });
 
+        //aggregation of strengths and weaknesses
+        const strengths : { [key: string] : number} = {};
+        const weaknesses: {[key:string]: number} = {};
+
+        reports.forEach(report =>{
+            report.strengths.forEach(s => {
+                strengths[s] = (strengths[s] || 0) + 1;
+            });
+
+            report.weekness.forEach(w => {
+              weaknesses[w] = (weaknesses[w] || 0) + 1;
+            } )
+        });
+
+        const topStrengths = Object.entries(weaknesses).sort((a,b) => b[1] - a[1]).slice(0,5).map(([name]) => name);
+
+        const topWeaknesses = Object.entries(weaknesses).sort((a,b) => b[1] - a[1]).slice(0,5).map(([name]) => name);
+
+        return {
+            strengths : topStrengths,
+            weaknesses : topWeaknesses
+        };
     }
 }
