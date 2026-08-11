@@ -124,4 +124,25 @@ export class AnalyticsService{
             weaknesses : topWeaknesses
         };
     }
+
+    async getQuestionPerformance(userid: string){
+       const answers = await prisma.answer.findMany({
+        where:{
+            userid,
+            score:{
+                not: null
+            }
+        },
+        include:{
+            question: true
+        }
+       });
+
+       const performance = answers.map( a => ({
+        question: a.question.text.substring(0,50) + "...",
+        score: a.score || 0
+       }));
+
+       return performance;
+    }
 }
