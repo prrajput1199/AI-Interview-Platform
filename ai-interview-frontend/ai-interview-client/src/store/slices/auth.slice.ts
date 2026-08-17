@@ -20,7 +20,6 @@ export const loginWithGoogle = createAsyncThunk(
     async (idToken: string) => {
         const response = await axiosInstance.post('auth/google',{idToken});
         return response.data.data.user;
-
     }
 );
 
