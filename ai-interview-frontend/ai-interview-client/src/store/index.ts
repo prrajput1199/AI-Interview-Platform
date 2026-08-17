@@ -1,12 +1,12 @@
 import {configureStore} from "@reduxjs/toolkit"
-
+import authreducer from '../store/slices/auth.slice'
 
 export const store = configureStore({
     reducer : {
         auth : authreducer,
-        user : userReducer,
-        interview: interviewReducer,
-        ui: uiReducer
+        // user : userReducer,
+        // interview: interviewReducer,
+        // ui: uiReducer
     },
 });
 
