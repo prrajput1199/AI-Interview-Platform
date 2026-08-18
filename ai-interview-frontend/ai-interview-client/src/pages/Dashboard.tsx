@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppSelector } from '@/hooks/redux';
-import React from 'react'
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
