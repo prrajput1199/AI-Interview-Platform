@@ -7,7 +7,8 @@ import userRoutes from "../modules/user/user.routes";
 import interviewRoutes from "../modules/interview/interview.routes"
 import { errorHandler } from "./middlewares/error.middleware";
 import resumeRoutes from "../modules/resume/resume.routes";
-import paymentRoutes from "../modules/payment/payment.routes"
+import paymentRoutes from "../modules/payment/payment.routes";
+import analyticsRoutes from "../modules/analytics/analytics.routes"
 const app = express();
 
 // Middlewares - these are like security guards that check every request
