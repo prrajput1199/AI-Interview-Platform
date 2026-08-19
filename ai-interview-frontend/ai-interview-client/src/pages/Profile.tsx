@@ -78,15 +78,17 @@ export default function Profile(){
                     <Label htmlFor="name">Display Name</Label>
                     {isEditing ? (<div className ="space-y-4">
                         <Input id="name" value={name} onChange={(e)=> setName(e.target.value)}/>
-                    </div>) : (<div className="space-x-2">
-                        <Button onClick={handleUpdate}> Save Changes</Button>
-                        <Button variant="outline" onClick={()=> setIsEditing(false)}> Cancel</Button>
+                        <div>
+                          <Button onClick={handleUpdate}> Save Changes</Button>
+                          <Button variant="outline" onClick={()=> setIsEditing(false)}> Cancel</Button>
+                        </div>
+                    </div>) : (<div className="flex justify-between items-center">
+                        <p className = "text-gray-700">{profile?.name || user?.name}</p>
+                        <Button variant="outline" onClick={() => setIsEditing(true)}>Edit</Button>
                     </div>)}
-
                 </div>
             </CardContent>
         </Card>
       </div>
     )
-
 }
