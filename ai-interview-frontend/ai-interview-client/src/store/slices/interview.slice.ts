@@ -83,3 +83,6 @@ const interviewSlice = createSlice({
           })
     }
 })
+
+export const { setCurrentQuestion, clearInterview, addAnswer} = interviewSlice.actions;
+export default interviewSlice.reducer;
