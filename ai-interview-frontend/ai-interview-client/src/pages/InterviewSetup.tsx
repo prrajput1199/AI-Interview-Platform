@@ -1,5 +1,9 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/hooks/redux";
+import { createInterview } from "@/store/slices/interview.slice";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod"
@@ -43,7 +47,26 @@ export default function InteterviewSetup() {
             mode: "",
             title: ""
         }
-    })
+    });
+
+    const onSubmit =async (data:FormValues)=>{
+            try {
+                const interview = await dispatch(createInterview({
+                    mode:data.mode,
+                    title:data.title || `${data.mode} Interview`
+                })).unwrap();
+
+                toast.add({
+                    title:"Interview Created",
+                    description:"Starting your interview..."
+                })
+            } catch (error:any) {
+                toast.add({
+                    title:"Creation Failed",
+                    description: error.message || 'failed to create Interview'
+                })
+            }
+    }
 
     return (
         <>
@@ -52,6 +75,47 @@ export default function InteterviewSetup() {
                     <CardHeader>
                         <CardTitle className=" text-2xl"> Interview Setup</CardTitle>
                     </CardHeader>
+                    <CardContent className="space-x-6">
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                <FormField 
+                                control={form.control} 
+                                name="mode"
+                                render={({field}) => (
+                                     <FormItem>
+                                        <FormLabel>
+                                            Interview Type
+                                        </FormLabel>
+                                        <Select onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        >
+                                          <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select Intevriew mode"/>
+                                            </SelectTrigger>
+                                          </FormControl>
+                                          <SelectContent>
+                                            {interviewModes.map((mode)=>(
+                                                <SelectItem key={mode.value} value={mode.value}>
+                                                   {mode.label}
+                                                </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                     </FormItem>
+                                )}
+                                >
+                                </FormField>
+                                {/* <FormField
+                                control={form.control}
+                                name="title"
+
+                                >
+
+                                </FormField> */}
+                            </form>
+                        </Form>      
+                    </CardContent>
                 </Card>
             </div>
         </>
