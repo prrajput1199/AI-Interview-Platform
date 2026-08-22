@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { useAppDispatch } from "@/hooks/redux";
@@ -106,13 +107,20 @@ export default function InteterviewSetup() {
                                 )}
                                 >
                                 </FormField>
-                                {/* <FormField
+                                <FormField
                                 control={form.control}
                                 name="title"
-
+                                render={({field})=> (<FormItem>
+                                    <FormLabel>
+                                       Interview Title (Optional)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g. Microsoft Frontend Interview" {...field}/>
+                                    </FormControl>
+                                </FormItem>)}
                                 >
 
-                                </FormField> */}
+                                </FormField>
                             </form>
                         </Form>      
                     </CardContent>
