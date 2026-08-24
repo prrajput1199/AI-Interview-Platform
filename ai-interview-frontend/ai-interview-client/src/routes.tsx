@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Profile from './pages/Profile';
 import Layout from './components/layout/layout';
+import InterviewSetup from './pages/InterviewSetup';
 
 export const router = createBrowserRouter([
     {
@@ -31,6 +32,16 @@ export const router = createBrowserRouter([
             <ProtectedRoute>
                 <Layout>
                     <Profile />
+                </Layout>
+            </ProtectedRoute>
+        )
+    },
+    {
+        path:'interview-setup',
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <InterviewSetup/>
                 </Layout>
             </ProtectedRoute>
         )

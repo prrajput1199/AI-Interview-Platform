@@ -34,7 +34,7 @@ const interviewModes = [
 ]
 
 
-export default function InteterviewSetup() {
+export default function InterviewSetup() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [isUploading, setIsUploading] = useState(false);
@@ -98,7 +98,6 @@ export default function InteterviewSetup() {
                 setIsUploading(false)
           }
         }
-    }
 
     const {getRootProps, getInputProps,isDragActive} = useDropzone({
         onDrop,
@@ -106,7 +105,7 @@ export default function InteterviewSetup() {
         maxFiles: 1
     })
 
-    const onSubmit = async (data:FormValues)=>{
+    const onSubmit = async (data:FormValues)=> {
             try {
                 const interview = await dispatch(createInterview({
                     mode:data.mode,
