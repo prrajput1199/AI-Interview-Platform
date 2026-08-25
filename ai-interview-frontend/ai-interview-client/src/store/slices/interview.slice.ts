@@ -43,6 +43,29 @@ export const fetchInterview= createAsyncThunk(
     }
 );
 
+export const submitAnswer = createAsyncThunk(
+ 'interview/submitAnswer',
+ async ({ interviewId, questionId, answer}: {
+    interviewId: string;
+    questionId:string;
+    answer: string;
+ }) =>{
+     const response = await axiosInstance.post(`/interviews/${interviewId}/answer`,{
+        questionId,
+        answer
+     })
+     return response.data.data;
+ }
+)
+
+export const completeInterview = createAsyncThunk(
+    'interview/complete',
+    async (interviewId:string) => {
+        const response = await axiosInstance.post(`/interviews/${interviewId}/complete`);
+        return response.data.data;
+
+    }
+)
 
 const interviewSlice = createSlice({
     name:'interview',
