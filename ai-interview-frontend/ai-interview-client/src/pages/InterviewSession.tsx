@@ -1,4 +1,6 @@
-import { Card, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { toast } from '@/components/ui/toast';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { addAnswer, clearInterview, completeInterview, fetchInterview, generateQuestions, setCurrentQuestion, submitAnswer } from '@/store/slices/interview.slice';
@@ -84,8 +86,30 @@ const InterviewSession = () => {
     <div className ="container mx-auto px-4 py-8 max-w-3xl">
           <Card>
              <CardHeader>
-                <div></div>
+                <div className='flex justify-between items-center'>
+                    <CardTitle className='text-xl'>
+                        Interview Session
+                    </CardTitle>
+                    <Badge variant="outline">
+                            Question {currentQuestionIndex + 1} of {questions.length}
+                    </Badge>
+                </div>
+                <div className="space-y-2">
+                    <Progress value={((currentQuestionIndex)/questions.length) * 100} className="h-2"/>
+                    <p className ="text-sm text-gray-500">
+                        {currentInterview.title || `${currentInterview.mode} Interview`}
+                    </p>
+                </div>
              </CardHeader>
+             <CardContent className='space-y-6'>
+               {/* {
+                currentQuestion ? (
+                <>
+                
+                </>
+                  )
+            } */}
+             </CardContent>
           </Card>
     </div>
   )
