@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/toast';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { addAnswer, clearInterview, completeInterview, fetchInterview, generateQuestions, setCurrentQuestion, submitAnswer } from '@/store/slices/interview.slice';
@@ -102,13 +103,19 @@ const InterviewSession = () => {
                 </div>
              </CardHeader>
              <CardContent className='space-y-6'>
-               {/* {
-                currentQuestion ? (
-                <>
-                
+               { currentQuestion ? ( <>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <p className ="text-lg font-medium">
+                        {currentQuestion.text}
+                    </p>
+                  </div>
+
+                  <Textarea/>
                 </>
-                  )
-            } */}
+                  ) : (<>
+                  
+                  </>)
+              } 
              </CardContent>
           </Card>
     </div>
