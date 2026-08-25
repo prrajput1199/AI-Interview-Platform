@@ -7,7 +7,7 @@ import { toast } from '@/components/ui/toast';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { addAnswer, clearInterview, completeInterview, fetchInterview, generateQuestions, setCurrentQuestion, submitAnswer } from '@/store/slices/interview.slice';
 import { Loader2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const InterviewSession = () => {

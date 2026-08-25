@@ -6,6 +6,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import Profile from './pages/Profile';
 import Layout from './components/layout/layout';
 import InterviewSetup from './pages/InterviewSetup';
+import InterviewSession from './pages/InterviewSession';
 
 export const router = createBrowserRouter([
     {
@@ -42,6 +43,16 @@ export const router = createBrowserRouter([
             <ProtectedRoute>
                 <Layout>
                     <InterviewSetup/>
+                </Layout>
+            </ProtectedRoute>
+        )
+    },
+       {
+        path:'/interview-session/:interviewId',
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <InterviewSession/>
                 </Layout>
             </ProtectedRoute>
         )
