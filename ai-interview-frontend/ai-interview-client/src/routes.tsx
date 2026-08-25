@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
         )
     },
     {
-        path:'interview-setup',
+        path:'/interview-setup',
         element: (
             <ProtectedRoute>
                 <Layout>
