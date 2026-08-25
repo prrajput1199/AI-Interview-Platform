@@ -84,8 +84,23 @@ const InterviewSession = () => {
             setIsSubmitting(false);
         }
     }
-
     
+    if(isLoading && !currentInterview){
+       return (<>
+          <div className = "container mx-auto px-4 py-8 flex justify-center items-center min-h-[60vh]">
+            <Loader2 className="h-8 w-8 animate-spin"/>
+          </div>
+       </>)
+    }
+
+    if(!currentInterview){
+        return (<>
+           <div className="container mx-auto px-4 py-8">
+               <p>Interview not found</p>
+           </div>
+        </>)
+    }
+
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
