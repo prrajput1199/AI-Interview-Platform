@@ -6,7 +6,6 @@ export function InterviewSessionSkeleton(){
           <div className="space-y-4">
               <Skeleton className="h-[200px] w-full"/>
               <Skeleton className="h-[150px] w-full"/>
-
               <div className="flex justify-between">
                  <Skeleton className="h-10 w-32"/>
                  <Skeleton className="h-10 w-32"/>
