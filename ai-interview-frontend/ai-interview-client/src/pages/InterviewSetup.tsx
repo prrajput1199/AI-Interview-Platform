@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, useFormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
@@ -11,10 +11,11 @@ import { z } from "zod"
 import useDropzone from "react-dropzone"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
 
 
 const formSchema = z.object({
-    mode: z.string.min(1, "Please select an Interview Mode"),
+    mode: z.string().min(1, "Please select an Interview Mode"),
     title: z.string().optional()
 });
 
@@ -40,7 +41,7 @@ export default function InterviewSetup() {
     const [isUploading, setIsUploading] = useState(false);
     const [resumeFile, setResumeFile] = useState<File | null>(null);
 
-    const [uploadResume] = useUploadResumeMutation();
+    // const [uploadResume] = useUploadResumeMutation();
     const { data: resumeData, refetch: refetchResume } = useGetResumeQuery(undefined, {
         skip: true
     })

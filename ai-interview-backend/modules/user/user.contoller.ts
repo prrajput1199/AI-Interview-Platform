@@ -21,7 +21,7 @@ export class UserController{
                     id:true,
                     email:true,
                     name:true,
-                    avatarUrl:true,
+                    avatarURL:true,
                     createdAt:true,
                     creditWallet:{
                         select:{
@@ -64,7 +64,7 @@ export class UserController{
                     id:true,
                     email: true,
                     name : true,
-                    avatarUrl: true
+                    avatarURL: true
                 }
             })
 
