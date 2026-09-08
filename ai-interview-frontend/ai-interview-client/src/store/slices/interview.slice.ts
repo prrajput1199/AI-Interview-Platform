@@ -43,6 +43,14 @@ export const fetchInterview= createAsyncThunk(
     }
 );
 
+export const fetchInterviewHistory = createAsyncThunk(
+  'interview/fetchHistory',
+  async ({ page = 1, limit = 10 }: { page?: number; limit?: number }) => {
+    const response = await axiosInstance.get(`/interviews?page=${page}&limit=${limit}`);
+    return response.data.data;
+  }
+);
+
 export const submitAnswer = createAsyncThunk(
  'interview/submitAnswer',
  async ({ interviewId, questionId, answer}: {

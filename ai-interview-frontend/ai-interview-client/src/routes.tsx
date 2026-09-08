@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Layout from './components/layout/layout';
 import InterviewSetup from './pages/InterviewSetup';
 import InterviewSession from './pages/InterviewSession';
+import InterviewHistory from './pages/InterviewHistory';
 
 export const router = createBrowserRouter([
     {
@@ -38,23 +39,33 @@ export const router = createBrowserRouter([
         )
     },
     {
-        path:'/interview-setup',
+        path: '/interview-setup',
         element: (
             <ProtectedRoute>
                 <Layout>
-                    <InterviewSetup/>
+                    <InterviewSetup />
                 </Layout>
             </ProtectedRoute>
         )
     },
-       {
-        path:'/interview-session/:interviewId',
+    {
+        path: '/interview-session/:interviewId',
         element: (
             <ProtectedRoute>
                 <Layout>
-                    <InterviewSession/>
+                    <InterviewSession />
                 </Layout>
             </ProtectedRoute>
         )
-    }
+    },
+    {
+        path: '/history',
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <InterviewHistory />
+                </Layout>
+            </ProtectedRoute>
+        ),
+    },
 ])
