@@ -9,6 +9,7 @@ import InterviewSetup from './pages/InterviewSetup';
 import InterviewSession from './pages/InterviewSession';
 import InterviewHistory from './pages/InterviewHistory';
 import Payment from './pages/Payment';
+import NotFound from './pages/NotFound';
 
 export const router = createBrowserRouter([
     {
@@ -79,4 +80,8 @@ export const router = createBrowserRouter([
             </ProtectedRoute>
         ),
     },
+    {
+    path: '*',
+    element: <NotFound />,
+  },
 ])
