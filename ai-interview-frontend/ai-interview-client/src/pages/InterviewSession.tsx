@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 const InterviewSession = () => {
     const { interviewId } = useParams<{ interviewId: string }>();
+    const [feedback, setFeedback] = useState(null);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -100,6 +101,8 @@ const InterviewSession = () => {
            </div>
         </>)
     }
+
+    
 
 
     return (
