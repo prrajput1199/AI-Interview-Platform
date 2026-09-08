@@ -8,6 +8,7 @@ import Layout from './components/layout/layout';
 import InterviewSetup from './pages/InterviewSetup';
 import InterviewSession from './pages/InterviewSession';
 import InterviewHistory from './pages/InterviewHistory';
+import Payment from './pages/Payment';
 
 export const router = createBrowserRouter([
     {
@@ -64,6 +65,16 @@ export const router = createBrowserRouter([
             <ProtectedRoute>
                 <Layout>
                     <InterviewHistory />
+                </Layout>
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/payment',
+        element: (
+            <ProtectedRoute>
+                <Layout>
+                    <Payment />
                 </Layout>
             </ProtectedRoute>
         ),
