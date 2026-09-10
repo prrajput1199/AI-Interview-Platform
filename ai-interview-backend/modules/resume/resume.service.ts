@@ -1,8 +1,8 @@
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "../../generated/prisma/client";
-import {GeminiService} from "../../services/gemini.service";
+import { GeminiService } from "../../services/gemini.service";
 import fs from "fs";
-import pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 const adapter = new PrismaNeon({
     connectionString: process.env.DATABASE_URL!,
@@ -14,21 +14,29 @@ export const prisma = new PrismaClient({
 
 const gemini = new GeminiService();
 
-export class ResumeService{
+export class ResumeService {
 
-    async uploadResume(userId:string,file:Express.Multer.File){
+    async uploadResume(userId: string, file: Express.Multer.File) {
         const dataBuffer = fs.readFileSync(file.path);
 
-        const pdfData = await pdf(dataBuffer);
+        const parser = new PDFParse({
+            data: dataBuffer,
+        });
+
+        const pdfData = await parser.getText();
+
+        await parser.destroy();
+
+        console.log(pdfData.text);
         const extractedText = pdfData.text;
 
         const resume = await prisma.resume.create({
-            data:{
+            data: {
                 userId,
                 fileName: file.originalname,
                 fileURL: file.path, // In production, upload to cloud storage
-                extractedText: extractedText.substring(0,5000),
-                status:"PROCESSED"
+                extractedText: extractedText.substring(0, 5000),
+                status: "PROCESSED"
             }
         })
 
@@ -36,9 +44,9 @@ export class ResumeService{
             const analysis = await gemini.analyzeResume(extractedText);
 
             await prisma.resume.update({
-                where : { id : resume.id},
-                data:{
-                      // validate what I need to update
+                where: { id: resume.id },
+                data: {
+                    // validate what I need to update
                 }
             });
 
@@ -49,28 +57,28 @@ export class ResumeService{
         } catch (error) {
             console.error("Resume analysis failed: ", error);
             await prisma.resume.update({
-                where: {id : resume.id},
-                data:{ status:"FAILED"}
+                where: { id: resume.id },
+                data: { status: "FAILED" }
             });
             throw new Error("Failed to analyze resume")
         }
     }
 
-    async getResume(userId:string){
+    async getResume(userId: string) {
         return prisma.resume.findFirst({
-            where: { userId},
-            orderBy:{
-                createdAt:"desc"
+            where: { userId },
+            orderBy: {
+                createdAt: "desc"
             }
         })
     }
 
-    async deleteResume(resumeId:string, userId: string){
+    async deleteResume(resumeId: string, userId: string) {
         const resume = await prisma.resume.findFirst({
-            where: {id:resumeId, userId}
+            where: { id: resumeId, userId }
         });
 
-        if(!resume){
+        if (!resume) {
             throw new Error("Resume not found");
         }
 
@@ -81,7 +89,7 @@ export class ResumeService{
         }
 
         return prisma.resume.delete({
-            where:{id : resumeId}
+            where: { id: resumeId }
         })
     }
 }

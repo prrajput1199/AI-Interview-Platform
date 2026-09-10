@@ -115,7 +115,7 @@ export class InterviewController {
         }
     }
 
-    async submitAnswer(req: AuthRequest, res: Response) {
+    async submitAnswers(req: AuthRequest, res: Response) {
         try {
             const userId = req.user!.userId;
 

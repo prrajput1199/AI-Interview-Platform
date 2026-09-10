@@ -1,8 +1,5 @@
 import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import { PageLoader } from './components/shared/PageLoader';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -16,9 +13,12 @@ import {
   LazyPayment,
   LazyProfile,
 } from './utils/lazy';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Layout from './components/layout/layout';
+import { PageLoader } from './components/shared/PageLoader';
 
 const withSuspense = (Component: React.ComponentType) => (
-  <Suspense fallback={<PageLoader />}>
+  <Suspense fallback={<PageLoader/>}>
     <Component />
   </Suspense>
 );

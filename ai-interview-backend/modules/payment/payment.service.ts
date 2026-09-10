@@ -73,7 +73,7 @@ export class PaymentService{
         const payment = await prisma.payment.update({
             where: {razorPayOrderId: orderId},
             data:{
-                razorpayPaymentId:paymentId,
+                razorPayPaymentId: paymentId,
                 status:"CAPTURED"
             }
         });

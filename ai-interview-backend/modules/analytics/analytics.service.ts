@@ -110,7 +110,7 @@ export class AnalyticsService{
                 strengths[s] = (strengths[s] || 0) + 1;
             });
 
-            report.weekness.forEach(w => {
+            report.weaknesses.forEach(w => {
               weaknesses[w] = (weaknesses[w] || 0) + 1;
             } )
         });
@@ -125,10 +125,10 @@ export class AnalyticsService{
         };
     }
 
-    async getQuestionPerformance(userid: string){
+    async getQuestionPerformance(userId: string){
        const answers = await prisma.answer.findMany({
         where:{
-            userid,
+            userId,
             score:{
                 not: null
             }

@@ -66,7 +66,7 @@ export class InterviewService{
             questions.map((text,index)=>{
                 prisma.question.create({
                     data:{
-                        InterviewId: interview.id,
+                        interviewId: interview.id,
                         text,
                         order: index +1
                     }
@@ -93,7 +93,7 @@ export class InterviewService{
                     order : 'asc'
                 },
                 include :{
-                    answers :true
+                    answer :true
                 }
             },
             report: true
