@@ -21,29 +21,51 @@ export class GeminiService {
     }
 
 
-    async generateQuestions(role: string, difficulty: string, count: number): Promise<string[]> {
+    async generateQuestions(
+        role: string,
+        difficulty: string,
+        count: number
+    ): Promise<string[]> {
         try {
             const prompt = `
-        Generate ${count} interview questions for a ${difficulty} level ${role} position.
-        Questions should be challenging and relevant to the role.
-        Return only the questions as a JSON array of strings.
-        Example: ["Question 1", "Question 2", "Question 3"]
-      `;
+               Generate ${count} interview questions for a ${difficulty} level ${role} position.
+
+               Questions should be challenging and relevant to the role.
+
+               Return ONLY a valid JSON array of strings.
+
+               Example:
+               ["Question 1", "Question 2", "Question 3"]
+               `;
 
             const result = await this.model.generateContent(prompt);
             const response = await result.response;
-            const text = response.text();
+            let text = response.text().trim();
 
-            try {
-                const questions = JSON.parse(text);
-                return questions;
-            } catch (error) {
-                // If not JSON, split by new lines
-                return text.split('\n').filter(q => q.trim().length > 0);
+            // Remove Markdown code fences if Gemini returns them
+            text = text
+                .replace(/^```json\s*/i, "")
+                .replace(/^```\s*/i, "")
+                .replace(/\s*```$/i, "")
+                .trim();
+
+            const questions: unknown = JSON.parse(text);
+
+            if (
+                !Array.isArray(questions) ||
+                !questions.every(
+                    (question): question is string =>
+                        typeof question === "string"
+                )
+            ) {
+                throw new Error("Gemini returned an invalid question format");
             }
+
+            return questions;
+
         } catch (error) {
-            console.error("Gemini generate question error", error);
-            throw new Error("Failed to Generate Questions")
+            console.error("Gemini generate question error:", error);
+            throw new Error("Failed to Generate Questions");
         }
     }
 
@@ -152,14 +174,14 @@ export class GeminiService {
         }
     }
 
-    async analyzeResume(text:string): Promise<{
+    async analyzeResume(text: string): Promise<{
         skills: string[];
-        experience:string;
-        projects:string[];
-        strengths:string[];
-        weaknesses:string[];
-    }>{
-          try {
+        experience: string;
+        projects: string[];
+        strengths: string[];
+        weaknesses: string[];
+    }> {
+        try {
             const prompt = `
              Resume Text:
         ${text.substring(0, 3000)} // Limit text length
@@ -181,26 +203,26 @@ export class GeminiService {
           "weaknesses": ["Weakness 1"]
         }`;
 
-        const result =  await this.model.generateContent(prompt);
-        const response = await result.response;
-        const Text = response.text();
-        
-        try {
-            const analysis = JSON.parse(Text);
-            return analysis;
-        } catch (error) {
-            return {
-             skills: ['Not analyzed'],
-             experience: 'Not analyzed',
-             projects: [],
-             strengths: ['Not analyzed'],
-             weaknesses: ['Not analyzed']
+            const result = await this.model.generateContent(prompt);
+            const response = await result.response;
+            const Text = response.text();
+
+            try {
+                const analysis = JSON.parse(Text);
+                return analysis;
+            } catch (error) {
+                return {
+                    skills: ['Not analyzed'],
+                    experience: 'Not analyzed',
+                    projects: [],
+                    strengths: ['Not analyzed'],
+                    weaknesses: ['Not analyzed']
+                }
             }
-        }
-          } catch (error) {
+        } catch (error) {
             console.error("Gemini resume analysis error: ", error);
             throw new Error("Failed to analyze resume")
-          }
+        }
     }
 
 

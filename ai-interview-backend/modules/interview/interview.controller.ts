@@ -122,33 +122,47 @@ export class InterviewController {
             const { interviewId } = req.params;
             const { questionId, answer } = req.body;
 
-            if (!questionId || !answer) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Quetion ID and answer are required"
-                })
-            }
-
             if (typeof interviewId !== "string") {
                 return res.status(400).json({
+                    success: false,
                     message: "Invalid interview ID",
                 });
             }
 
-            const result = await answerService.submitAnswer(interviewId, questionId, userId, answer);
+            if (!questionId || typeof questionId !== "string") {
+                return res.status(400).json({
+                    success: false,
+                    message: "Question ID is required",
+                });
+            }
+
+            if (!answer || typeof answer !== "string" || !answer.trim()) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Answer is required",
+                });
+            }
+
+            const result = await answerService.submitAnswer(
+                interviewId,
+                questionId,
+                userId,
+                answer
+            );
 
             res.status(200).json({
                 success: true,
                 data: result,
-                message: "Answer submitted successfully"
+                message: "Answer submitted successfully",
             });
 
         } catch (error: any) {
-            console.error("Submit answer error", error);
-            res.status(400).json({
+            console.error("Submit answer error:", error);
+
+            return res.status(400).json({
                 success: false,
-                message: error.message || "failed to submit answer"
-            })
+                message: error.message || "Failed to submit answer",
+            });
         }
     }
 

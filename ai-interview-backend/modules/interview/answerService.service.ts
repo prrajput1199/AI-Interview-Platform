@@ -21,7 +21,21 @@ export class AnswerService {
         answerText: string
     ) {
 
-        // Check that the question belongs to the interview
+        if (!answerText || !answerText.trim()) {
+            throw new Error("Answer is required");
+        }
+
+        const interview = await prisma.interview.findFirst({
+            where: {
+                id: interviewId,
+                userId: userId,
+            },
+        });
+
+        if (!interview) {
+            throw new Error("Interview not found");
+        }
+
         const question = await prisma.question.findFirst({
             where: {
                 id: questionId,
@@ -49,8 +63,7 @@ export class AnswerService {
             data: {
                 questionId: questionId,
                 userId: userId,
-                text: answerText,
-                evaluatedAt: new Date(),
+                text: answerText.trim(),
             },
         });
 
@@ -59,7 +72,7 @@ export class AnswerService {
             // Evaluate answer using Gemini
             const evaluation = await gemini.evaluateAnswer(
                 question.text,
-                answerText
+                answerText.trim()
             );
 
             // Update answer with evaluation
@@ -70,6 +83,7 @@ export class AnswerService {
                 data: {
                     score: evaluation.score,
                     feedback: evaluation.feedback,
+                    evaluatedAt: new Date(),
                 },
             });
 
@@ -79,9 +93,10 @@ export class AnswerService {
             };
 
         } catch (error) {
+            console.error("Answer evaluation failed:", error);
 
-            console.error("Evaluation failed", error);
-
+            // Answer is still successfully saved,
+            // but evaluation was not completed.
             return {
                 answer,
                 evaluation: null,

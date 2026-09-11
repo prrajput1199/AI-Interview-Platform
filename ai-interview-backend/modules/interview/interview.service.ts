@@ -64,7 +64,7 @@ export class InterviewService{
 
         const savedQuestions = await Promise.all(
             questions.map((text,index)=>{
-                prisma.question.create({
+                return prisma.question.create({
                     data:{
                         interviewId: interview.id,
                         text,
