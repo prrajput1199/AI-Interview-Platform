@@ -8,7 +8,7 @@ const resumeController = new ResumeController();
 
 router.use(authenticator);
 
-router.post("upload", upload.single('resume'),resumeController.uploadResume.bind(resumeController));
+router.post("/upload", upload.single('resume'),resumeController.uploadResume.bind(resumeController));
 
 router.get("/",resumeController.getResume.bind(resumeController));
 
