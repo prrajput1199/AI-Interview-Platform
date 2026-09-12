@@ -2,13 +2,11 @@ import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { authApi } from '@/lib/api/auth'
-// import { usersApi } from '@/lib/api/users'
+import { usersApi } from '@/lib/api/users'
 import { ApiError, setUnauthorizedHandler } from '@/lib/api/client'
 import { signInWithGoogle, signOutOfFirebase } from '@/lib/firebase'
-// import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { usersApi } from '@/lib/api/users'
-import { clearSession, setUser } from '@/store/authSlice'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { clearSession, setUser } from '@/store/authSlice'
 
 const PROFILE_KEY = ['profile']
 
