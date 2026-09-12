@@ -1,21 +1,55 @@
-export type ResumeStatus = 'PROCESSING' | 'PROCESSED' | 'FAILED'
+export type InterviewStatus = 'CREATED' | 'IN_PROGRESS' | 'COMPLETED'
 
-export interface ResumeAnalysis {
-  skills: string[]
-  experienceYears: number
-  projects: string[]
+export interface InterviewMode {
+  value: string
+  label: string
 }
 
-export interface Resume {
+export interface Answer {
   id: string
-  fileName: string
-  fileUrl: string
-  status: ResumeStatus
-  createdAt: string
-  analysis: ResumeAnalysis | null
+  text: string
+  score: number
+  feedback: string
+  keywords?: string[]
 }
 
-export interface ResumeUploadResult {
-  resumeId: string
-  status: ResumeStatus
+export interface Question {
+  id: string
+  text: string
+  order: number
+  answer?: Answer | null
+}
+
+export interface Interview {
+  id: string
+  userId?: string
+  mode: string
+  title: string
+  status: InterviewStatus
+  questionCount?: number
+  score?: number
+  questions?: Question[]
+  report?: InterviewReport | null
+  createdAt: string
+}
+
+export interface AnswerEvaluation {
+  score: number
+  feedback: string
+  keywords: string[]
+}
+
+export interface SubmitAnswerResult {
+  answer: Answer
+  evaluation: AnswerEvaluation
+}
+
+export interface InterviewReport {
+  id: string
+  interviewId: string
+  overallScore: number
+  strengths: string[]
+  weaknesses: string[]
+  suggestions: string[]
+  summary: string
 }
