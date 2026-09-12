@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import NotFound from './pages/NotFound';
+import NotFound from './pages/NotFoundPage';
 import {
   LazyDashboard,
   LazyInterviewSetup,
