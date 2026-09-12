@@ -1,9 +1,9 @@
 import { Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-// import { Logo } from '@/components/navigation/Logo'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { hasFirebaseConfig } from '@/lib/api/firebase'
+import { Logo } from '@/components/Navigation/Logo'
 
 function GoogleIcon() {
   return (
@@ -35,10 +35,10 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-bg px-6">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex justify-center">
-          {/* <Link to="/">
+          <Link to="/">
             <Logo />
-          </Link> */}
-        </div>/
+          </Link>
+        </div>
 
         <div className="rounded-lg border border-border bg-bg-raised p-8 text-center">
           <h1 className="text-lg font-semibold text-fg">Sign in to Loopcoach</h1>

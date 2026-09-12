@@ -1,8 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { signOut } from 'firebase/auth';
-import { auth } from '../../config/firebase';
-import { logout } from '../../store/slices/auth.slice';
 import { Button } from '../ui/button';
 import { useAppSelector } from '../../hooks/redux';
 import { 
@@ -31,8 +29,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      await dispatch(logout()).unwrap();
+      // await signOut(auth);
+      // await dispatch(logout()).unwrap();
       navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -90,10 +88,10 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleLogout}
+              // onClick={handleLogout}
               className="text-gray-600"
             >
-              <LogOut className="h-4 w-4" />
+              {/* <LogOut className="h-4 w-4" /> */}
             </Button>
           </div>
         </div>
