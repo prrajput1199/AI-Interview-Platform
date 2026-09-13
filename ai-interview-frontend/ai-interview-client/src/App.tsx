@@ -1,23 +1,16 @@
 import { Route, Routes } from 'react-router-dom'
 import { useSessionBootstrap } from '@/hooks/useAuth'
-
 import { AppShell } from '@/components/layout/AppShell'
-
-// import LandingPage from '@/pages/LandingPage'
-
-// import DashboardPage from '@/pages/dashboard/DashboardPage'
-// import InterviewHistoryPage from '@/pages/interviews/InterviewHistoryPage'
-// import NewInterviewPage from '@/pages/interviews/NewInterviewPage'
-// import InterviewSessionPage from '@/pages/interviews/InterviewSessionPage'
-// import InterviewReportPage from '@/pages/interviews/InterviewReportPage'
-// import ResumePage from '@/pages/resume/ResumePage'
-// import AnalyticsPage from '@/pages/analytics/AnalyticsPage'
-// import CreditsPage from '@/pages/credits/CreditsPage'
-// import ProfilePage from '@/pages/profile/ProfilePage'
 import LoginPage from './pages/Login'
 import NotFoundPage from './pages/NotFoundPage'
 import { GuestRoute, ProtectedRoute } from './components/layout/protectedRoute'
 import LandingPage from './pages/LandingPage'
+import DashboardPage from './pages/dashboard/dashboard'
+import InterviewHistoryPage from './pages/interviews/interviewHistoryPage'
+import NewInterviewPage from './pages/interviews/newInterviewPage'
+import InterviewSessionPage from './pages/interviews/interviewSessionPage'
+import ProfilePage from './pages/profile/profilePage'
+import CreditsPage from './pages/credits/creditsPage'
 
 export default function App() {
   useSessionBootstrap()
@@ -31,15 +24,15 @@ export default function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
-          {/* <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/interviews" element={<InterviewHistoryPage />} />
           <Route path="/interviews/new" element={<NewInterviewPage />} />
           <Route path="/interviews/:interviewId" element={<InterviewSessionPage />} />
-          <Route path="/interviews/:interviewId/report" element={<InterviewReportPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
+          {/* <Route path="/interviews/:interviewId/report" element={<InterviewReportPage />} /> */}
+          {/* <Route path="/resume" element={<ResumePage/>} />
+          <Route path="/analytics" element={<AnalyticsPage />} /> */}
           <Route path="/credits" element={<CreditsPage />} />
-          <Route path="/profile" element={<ProfilePage />} /> */}
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Route>
 
