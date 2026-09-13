@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ErrorState } from '@/components/errors/errorState'
 import { Pagination } from '@/components/ui/Pagination'
 import { PurchasePanel } from '@/components/payments/purchasepanel'
+import { TransactionList } from '@/components/payments/TransactionList'
 
 
 export default function CreditsPage() {
