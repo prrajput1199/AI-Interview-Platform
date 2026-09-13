@@ -11,6 +11,9 @@ import NewInterviewPage from './pages/interviews/newInterviewPage'
 import InterviewSessionPage from './pages/interviews/interviewSessionPage'
 import ProfilePage from './pages/profile/profilePage'
 import CreditsPage from './pages/credits/creditsPage'
+import InterviewReportPage from './pages/interviews/interviewReportPage'
+import ResumePage from './pages/resume/resumePage'
+import AnalyticsPage from './pages/analytics/analyticsPage'
 
 export default function App() {
   useSessionBootstrap()
@@ -28,9 +31,9 @@ export default function App() {
           <Route path="/interviews" element={<InterviewHistoryPage />} />
           <Route path="/interviews/new" element={<NewInterviewPage />} />
           <Route path="/interviews/:interviewId" element={<InterviewSessionPage />} />
-          {/* <Route path="/interviews/:interviewId/report" element={<InterviewReportPage />} /> */}
-          {/* <Route path="/resume" element={<ResumePage/>} />
-          <Route path="/analytics" element={<AnalyticsPage />} /> */}
+          <Route path="/interviews/:interviewId/report" element={<InterviewReportPage/>} />
+          <Route path="/resume" element={<ResumePage/>} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/credits" element={<CreditsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
