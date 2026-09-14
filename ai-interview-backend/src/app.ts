@@ -1,34 +1,45 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import helmet from "helmet";
-import authRoutes from '../modules/auth/auth.routes';
-import userRoutes from "../modules/user/user.routes";
-import interviewRoutes from "../modules/interview/interview.routes"
-import { errorHandler } from "./middlewares/error.middleware";
-import resumeRoutes from "../modules/resume/resume.routes";
-import paymentRoutes from "../modules/payment/payment.routes";
-import analyticsRoutes from "../modules/analytics/analytics.routes"
-const app = express();
+import express, { type Express } from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
+import { env } from '@/config/env'
+import { healthRouter } from '@/modules/health/health.routes'
+import { apiRouter } from '@/routes'
+import { apiRateLimiter } from '@/middlewares/rate-limit.middleware'
+import { notFoundHandler } from '@/middlewares/not-found.middleware'
+import { errorMiddleware } from '@/middlewares/error.middleware'
 
-// Middlewares - these are like security guards that check every request
-app.use(helmet()); // Adds security headers
-app.use(express.json());
-app.use(cors({
-   origin:process.env.FRONTEND_URL || "http://localhost:5173",
-   credentials: true 
-}))
+const WEBHOOK_PATH = '/api/v1/payments/webhook'
 
-app.use(express.urlencoded({extended:true}));
-app.use(cookieParser());
-app.use(errorHandler);
+export function createApp(): Express {
+  const app = express()
 
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/vi/user', userRoutes);
-app.use('/api/v1/interviews', interviewRoutes);
-app.use('/api/v1/resume', resumeRoutes);
-app.use('/api/v1/payment',paymentRoutes);
-app.use('/api/v1/analytics', analyticsRoutes)
+  app.disable('x-powered-by')
+  app.set('trust proxy', 1)
 
+  app.use(helmet())
+  app.use(
+    cors({
+      origin: env.FRONTEND_URL,
+      credentials: true,
+    }),
+  )
 
-export default app;
+  app.use(WEBHOOK_PATH, express.raw({ type: 'application/json', limit: '1mb' }))
+  
+  app.use((req, res, next) => {
+    if (req.path === WEBHOOK_PATH) return next()
+    express.json({ limit: '2mb' })(req, res, next)
+  })
+
+  app.use(cookieParser())
+  app.use(apiRateLimiter)
+
+  app.use('/health', healthRouter)
+  app.use('/api/v1', apiRouter)
+
+  app.use(notFoundHandler)
+  app.use(errorMiddleware)
+
+  return app
+}

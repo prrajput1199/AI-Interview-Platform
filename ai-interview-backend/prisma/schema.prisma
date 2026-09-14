@@ -1,7 +1,18 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+//
+// SCHEMA CHANGES MADE (see README "Schema changes" section for full rationale):
+//   1. Interview.resumeId (+ relation to Resume) was added. The API contract's
+//      Create Interview request accepts a `resumeId`, but the original schema
+//      had no field to persist which resume an interview was generated from.
+//   2. Resume.analysis (Json?) was added. The API contract's Get Resume
+//      response includes a structured `analysis` object (skills/experience/
+//      projects), but the original schema had no field to store it — only
+//      `extractedText`. Recomputing it on every request would be slow,
+//      costly, non-deterministic, and incompatible with the documented
+//      PROCESSING -> PROCESSED lifecycle.
+// Both changes are additive and nullable — nothing existing was removed,
+// renamed, or made required.
 
 generator client {
   provider = "prisma-client"
@@ -32,6 +43,7 @@ model User {
 model Interview {
   id            String   @id @default(cuid())
   userId        String
+  resumeId      String? // added — see header note (1)
   mode          String
   title         String?
   status        String   @default("CREATED")
@@ -41,6 +53,7 @@ model Interview {
   updatedAt     DateTime @updatedAt
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume    Resume?    @relation(fields: [resumeId], references: [id], onDelete: SetNull)
   questions Question[]
   report    Report?
 }
@@ -72,10 +85,12 @@ model Resume {
   fileURL       String
   status        String
   extractedText String   @db.Text
+  analysis      Json? // added — see header note (2)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviews Interview[]
 }
 
 model Creditwallet {
