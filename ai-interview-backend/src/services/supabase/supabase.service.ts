@@ -6,7 +6,7 @@ import { logger } from '@/utils/logger'
 let client: SupabaseClient
 
 function getSupabaseClient(): SupabaseClient {
-  if (!client) {.
+  if (!client) {
     client = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
       auth: { persistSession: false },
     })
