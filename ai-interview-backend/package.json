@@ -11,8 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "postinstall": "prisma generate"
+    "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
