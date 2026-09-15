@@ -1,4 +1,4 @@
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import type { TrendPoint } from '@/types/analytics'
 import { formatDate } from '@/lib/utils'
 import { LineChart as LineChartIcon } from 'lucide-react'

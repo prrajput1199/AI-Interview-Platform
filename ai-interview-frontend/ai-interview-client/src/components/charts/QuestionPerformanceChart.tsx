@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import type { QuestionPerformance } from '@/types/analytics'
 import { BarChart3 } from 'lucide-react'
 import { EmptyState } from '../empty-states/emptyStates'
