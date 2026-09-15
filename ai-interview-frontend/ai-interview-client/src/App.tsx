@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { useSessionBootstrap } from '@/hooks/useAuth'
 import { AppShell } from '@/components/layout/AppShell'
-import LoginPage from './pages/Login'
 import NotFoundPage from './pages/NotFoundPage'
 import { GuestRoute, ProtectedRoute } from './components/layout/protectedRoute'
 import LandingPage from './pages/LandingPage'
@@ -14,6 +13,7 @@ import CreditsPage from './pages/credits/creditsPage'
 import InterviewReportPage from './pages/interviews/interviewReportPage'
 import ResumePage from './pages/resume/resumePage'
 import AnalyticsPage from './pages/analytics/analyticsPage'
+import LoginPage from './pages/auth/LoginPage'
 
 export default function App() {
   useSessionBootstrap()

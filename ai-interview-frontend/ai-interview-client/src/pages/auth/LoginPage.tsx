@@ -2,8 +2,8 @@ import { Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
-import { hasFirebaseConfig } from '@/lib/api/firebase'
 import { Logo } from '@/components/Navigation/Logo'
+import { hasFirebaseConfig } from '@/lib/firebase'
 
 function GoogleIcon() {
   return (
