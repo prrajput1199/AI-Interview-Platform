@@ -23,7 +23,8 @@ a controller or route:
 ```
 InterviewService → GeminiService → Gemini API
 PaymentService   → RazorpayService → Razorpay API
-AuthService      → FirebaseService → Firebase Admin
+AuthService      → FirebaseService → Firebase Admin (auth only)
+ResumeService    → SupabaseStorageService → Supabase Storage (files)
 ResumeService    → PdfService (extractText) / GeminiService (analyzeResume)
 InterviewService → PdfService (generateInterviewReportPdf)
 ```
@@ -130,6 +131,7 @@ itself.
 - **Webhook verification**: HMAC-SHA256 over the raw body, timing-safe compared.
 - **File uploads**: PDF-only by MIME + extension at the multer layer, then a magic-byte
   (`%PDF`) check in `PdfService` before anything is parsed — extension/MIME alone are not trusted.
+  Files never touch local disk (see "File storage" below).
 - **Rate limiting**: a general limiter on all `/api` traffic, and a tighter one on
   auth/Gemini/payment endpoints (`express-rate-limit` — see "Notes on package.json" below).
 - **Headers/CORS**: `helmet()`, and CORS locked to `FRONTEND_URL` with `credentials: true`
@@ -138,7 +140,36 @@ itself.
   consistent `{ success: false, message, error: { code } }` bodies and never leaks a stack
   trace, Prisma internals, or secrets in production.
 
-## Getting started
+## File storage (resumes)
+
+Resume PDFs are stored in **Supabase Storage**, not on local disk and not in Firebase Storage. Supabase's free tier (1GB file storage) genuinely requires no card, so that's what this uses instead. Firebase itself is still used for Google auth — only file
+storage moved.
+
+### One-time setup in the Supabase dashboard
+
+1. Create a free project at [supabase.com](https://supabase.com) (no card required).
+2. **Storage → Create a new bucket.** Name it `resumes` (or anything — just match
+   `SUPABASE_STORAGE_BUCKET`). Leave it **private** (don't toggle "Public bucket") — resumes
+   are personal data, and the backend hands out short-lived signed URLs instead.
+3. **Project Settings → API.** Copy the **Project URL** into `SUPABASE_URL`, and the
+   **`service_role`** secret key (not the `anon` public key) into `SUPABASE_SERVICE_ROLE_KEY`.
+   The service role key bypasses Row Level Security, which is intentional here — it's only
+   ever used server-side and never sent to the frontend.
+
+Flow (`resume.service.ts` + `services/supabase/supabase.service.ts`):
+
+1. `upload.middleware.ts` uses `multer.memoryStorage()` — the file exists only as a `Buffer`
+   in the request, never written to disk.
+2. `PdfService.extractText` validates the magic bytes and extracts text from that buffer.
+3. `SupabaseStorageService.uploadFile` uploads the buffer to
+   `resumes/{userId}/{uuid}.pdf` in the bucket.
+4. Only the **object path** is stored in `Resume.fileURL` — not a URL. Since the bucket is
+   private, `GET /resume` generates a fresh, short-lived signed URL
+   (`SupabaseStorageService.getSignedDownloadUrl`, 15 minutes) every time it's requested,
+   rather than persisting a URL that would eventually expire.
+5. Deleting a resume (or replacing it with a new upload) also deletes the Storage object,
+   via a best-effort `deleteFileQuietly` that never fails the request even if the object is
+   already gone.
 
 ```bash
 npm install              # also runs `prisma generate` via postinstall
@@ -227,6 +258,7 @@ limiting as part of production security, and nothing in the provided dependency 
 it, so a small, well-maintained addition was made rather than hand-rolling a limiter or
 skipping the requirement.
 
+A second dependency was added after the initial delivery: **`@supabase/supabase-js`**, for resume file storage. 
 ## What wasn't (and couldn't be) verified end-to-end here
 
 This sandbox's network is restricted to package registries — there's no live Postgres

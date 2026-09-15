@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
 import path from 'node:path'
 import { prisma } from '@/prisma/client'
 import { pdfService } from '@/services/pdf/pdf.service'
@@ -6,6 +6,7 @@ import { geminiService } from '@/services/gemini/gemini.service'
 import { logger } from '@/utils/logger'
 import { BadRequestError, ForbiddenError, NotFoundError } from '@/utils/errors'
 import type { ResumeDto, ResumeUploadResultDto } from './resume.types'
+import { supabaseStorageService } from '@/services/supabase/supabase.service'
 
 const RESUME_STATUS = {
   PROCESSING: 'PROCESSING',
@@ -14,18 +15,19 @@ const RESUME_STATUS = {
 } as const
 
 class ResumeService {
-  /**
-   * Saves the uploaded PDF's extracted text immediately (fast, synchronous),
-   * then kicks off Gemini analysis in the background without blocking the
-   * response — matching the API contract's 202 Accepted / PROCESSING flow.
-   * A user has at most one resume at a time: uploading replaces any existing one.
-   */
   async uploadResume(
     userId: string,
     file: Express.Multer.File,
   ): Promise<ResumeUploadResultDto> {
-    const fileBuffer = await fs.readFile(file.path)
-    const extractedText = await pdfService.extractText(fileBuffer)
+    const extractedText = await pdfService.extractText(file.buffer)
+
+    const ext = path.extname(file.originalname).toLowerCase() || '.pdf'
+    const destinationPath = `resumes/${userId}/${randomUUID()}${ext}`
+    await supabaseStorageService.uploadFile({
+      buffer: file.buffer,
+      destinationPath,
+      contentType: 'application/pdf',
+    })
 
     const existing = await prisma.resume.findMany({ where: { userId } })
 
@@ -37,20 +39,16 @@ class ResumeService {
         data: {
           userId,
           fileName: file.originalname,
-          fileURL: `/uploads/resumes/${path.basename(file.path)}`,
+          fileURL: destinationPath,
           status: RESUME_STATUS.PROCESSING,
           extractedText,
         },
       })
     })
 
-    // Best-effort cleanup of the previous file(s) on disk — this must never
-    // fail the request itself.
-    await this.deleteFilesQuietly(existing.map((r) => r.fileURL))
+    // Best-effort cleanup of the previous file(s) — must never fail the request itself.
+    await Promise.all(existing.map((r) => supabaseStorageService.deleteFileQuietly(r.fileURL)))
 
-    // Fire-and-forget: analyze in the background so the upload response
-    // returns immediately. Errors are caught and turn the resume FAILED
-    // rather than leaving it stuck in PROCESSING forever.
     void this.runAnalysis(resume.id, extractedText)
 
     return { resumeId: resume.id, status: resume.status }
@@ -90,7 +88,7 @@ class ResumeService {
     if (resume.userId !== userId) throw new ForbiddenError("You can't delete another user's resume")
 
     await prisma.resume.delete({ where: { id: resumeId } })
-    await this.deleteFilesQuietly([resume.fileURL])
+    await supabaseStorageService.deleteFileQuietly(resume.fileURL)
   }
 
   /** Used internally by the interview module to resolve resume context for AI generation. */
@@ -103,35 +101,24 @@ class ResumeService {
     return resume
   }
 
-  private toDto(resume: {
+  private async toDto(resume: {
     id: string
     fileName: string | null
     fileURL: string
     status: string
     createdAt: Date
     analysis: unknown
-  }): ResumeDto {
+  }): Promise<ResumeDto> {
+    const fileUrl = await supabaseStorageService.getSignedDownloadUrl(resume.fileURL)
+
     return {
       id: resume.id,
       fileName: resume.fileName,
-      fileUrl: resume.fileURL,
+      fileUrl,
       status: resume.status,
       createdAt: resume.createdAt.toISOString(),
       analysis: (resume.analysis as ResumeDto['analysis']) ?? null,
     }
-  }
-
-  private async deleteFilesQuietly(fileUrls: string[]): Promise<void> {
-    await Promise.all(
-      fileUrls.map(async (fileUrl) => {
-        const filePath = path.resolve(process.cwd(), 'uploads', 'resumes', path.basename(fileUrl))
-        try {
-          await fs.unlink(filePath)
-        } catch {
-          // File may already be gone — not worth failing the request over.
-        }
-      }),
-    )
   }
 }
 

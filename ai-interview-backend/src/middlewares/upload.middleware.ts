@@ -1,20 +1,9 @@
 import multer from 'multer'
 import path from 'node:path'
-import fs from 'node:fs'
-import { randomUUID } from 'node:crypto'
 import { env } from '@/config/env'
 import { BadRequestError } from '@/utils/errors'
 
-const uploadRoot = path.resolve(process.cwd(), env.UPLOAD_DIR, 'resumes')
-fs.mkdirSync(uploadRoot, { recursive: true })
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadRoot),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || '.pdf'
-    cb(null, `${randomUUID()}${ext}`)
-  },
-})
+const storage = multer.memoryStorage()
 
 function pdfFileFilter(
   _req: unknown,

@@ -12,6 +12,11 @@ export function useResume() {
     queryKey: ['resume'],
     queryFn: resumeApi.get,
     retry: false,
+    refetchInterval: (query) => {
+      return query.state.data?.status === 'PROCESSING'
+        ? 2000
+        : false
+    },
   })
 }
 

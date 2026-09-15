@@ -16,6 +16,10 @@ const envSchema = z.object({
   FIREBASE_CLIENT_EMAIL: z.string().min(1, 'FIREBASE_CLIENT_EMAIL is required'),
   FIREBASE_PRIVATE_KEY: z.string().min(1, 'FIREBASE_PRIVATE_KEY is required'),
 
+  SUPABASE_URL: z.string().min(1, 'SUPABASE_URL is required'),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
+  SUPABASE_STORAGE_BUCKET: z.string().min(1).default('resumes'),
+
   GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
   GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
 
@@ -27,7 +31,6 @@ const envSchema = z.object({
   CREDITS_PER_INTERVIEW: z.coerce.number().int().positive().default(1),
   MAX_UPLOAD_SIZE_MB: z.coerce.number().int().positive().default(10),
 
-  UPLOAD_DIR: z.string().default('uploads'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 })
 
