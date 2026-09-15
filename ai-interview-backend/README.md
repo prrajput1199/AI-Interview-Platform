@@ -259,18 +259,3 @@ it, so a small, well-maintained addition was made rather than hand-rolling a lim
 skipping the requirement.
 
 A second dependency was added after the initial delivery: **`@supabase/supabase-js`**, for resume file storage. 
-## What wasn't (and couldn't be) verified end-to-end here
-
-This sandbox's network is restricted to package registries — there's no live Postgres
-instance, and no real Firebase, Gemini, or Razorpay credentials to call. So the following are
-implemented and internally consistent with the API contract and Prisma schema, but not
-exercised against live services:
-
-- `prisma generate` / `prisma migrate dev` (blocked: can't reach Prisma's engine-binary CDN)
-- A full `tsc` build (depends on the generated Prisma client existing first)
-- Live Firebase ID token verification, live Gemini calls, live Razorpay order/webhook calls
-
-Everything else — the request/response shapes, ownership checks, transaction boundaries,
-validation, and error handling — was written and reviewed directly against the Postman
-collection and Prisma schema. Once you run `npm install && npx prisma generate` in a normal
-environment, `npm run typecheck` is the fastest way to catch anything that slipped through.
