@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"ts-node --files -r tsconfig-paths/register src/server.ts\"",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && tsc && tsc-alias",
     "start": "node dist/src/server.js",
     "lint": "echo \"no linter configured\" && exit 0",
     "typecheck": "tsc --noEmit",
@@ -47,6 +47,7 @@
     "@types/node": "^26.1.1",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.9.5",
     "typescript": "^5.9.2"
   }
 }
